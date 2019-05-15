@@ -1,6 +1,17 @@
-{
-    "require": {
-        "mi_procedural": "v1.0.0",
-        "phpmailer/phpmailer": "v6.0.7"
+"name": "misujon/mi_procedural",
+"type": "library",
+"description": "A PHP procedural Framework that helps the beginners and experts to develop system in a short time",
+"keywords": ["mi_procedural","php_procedural", "procedural_framework"],
+"homepage": "https://github.com/misujon/mi_procedural",
+"license": "MIT",
+"authors": [
+    {
+        "name": "misujon",
+        "email": "misujon58262@gmail.com",
+        "role": "Developer"
     }
+],
+"minimum-stability": "stable",
+ "require": {
+    "php": ">=7.0.9"
 }
