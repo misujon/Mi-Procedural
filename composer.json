@@ -1,5 +1,6 @@
 {
     "require": {
+        "mi_procedural": "v1.0.0",
         "phpmailer/phpmailer": "v6.0.7"
     }
 }
