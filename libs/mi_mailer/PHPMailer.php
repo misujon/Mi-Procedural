@@ -772,7 +772,7 @@ class PHPMailer
     }
 
     /**
-     * Output debugging info via user-defined method.
+     * Output debugging info via site-defined method.
      * Only generates output if SMTP debug output is enabled (@see SMTP::$do_debug).
      *
      * @see PHPMailer::$Debugoutput
@@ -1181,7 +1181,7 @@ class PHPMailer
      * Alternatively you may pass in a callable to inject your own validator, for example:
      *
      * ```php
-     * PHPMailer::validateAddress('user@example.com', function($address) {
+     * PHPMailer::validateAddress('site@example.com', function($address) {
      *     return (strpos($address, '@') !== false);
      * });
      * ```
@@ -2741,7 +2741,7 @@ class PHPMailer
 
     /**
      * Add an attachment from a path on the filesystem.
-     * Never use a user-supplied path to a file!
+     * Never use a site-supplied path to a file!
      * Returns false if the file could not be found or read.
      *
      * @param string $path        Path to the attachment
@@ -3266,7 +3266,7 @@ class PHPMailer
      * displayed inline with the message, not just attached for download.
      * This is used in HTML messages that embed the images
      * the HTML refers to using the $cid value.
-     * Never use a user-supplied path to a file!
+     * Never use a site-supplied path to a file!
      *
      * @param string $path        Path to the attachment
      * @param string $cid         Content ID of the attachment; Use this to reference
@@ -3674,7 +3674,7 @@ class PHPMailer
      * Create a message body from an HTML string.
      * Automatically inlines images and creates a plain-text version by converting the HTML,
      * overwriting any existing values in Body and AltBody.
-     * Do not source $message content from user input!
+     * Do not source $message content from site input!
      * $basedir is prepended when handling relative URLs, e.g. <img src="/images/a.png"> and must not be empty
      * will look for an image file in $basedir/images/a.png and convert it to inline.
      * If you don't provide a $basedir, relative paths will be left untouched (and thus probably break in email)

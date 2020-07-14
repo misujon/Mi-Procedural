@@ -1,0 +1,24 @@
+Options +FollowSymLinks -MultiViews
+RewriteEngine on
+
+php_value include_path "../"
+php_value auto_prepend_file "functions.php"
+
+RewriteRule ^category/(.*)$ category-products.php?cat=$1 [NC,L]
+RewriteRule ^sub-category/(.*)$ sub-category-products.php?cat=$1 [NC,L]
+RewriteRule ^sub/(.*)$ all-sub-category.php?cat=$1 [NC,L]
+RewriteRule ^product/(.*)$ product-single.php?pro=$1 [NC,L]
+RewriteRule ^slider/(.*)$ seller_shop_slider.php?slide=$1 [NC,L]
+#RewriteRule ^order/(.*)$ order_details.php?orid=$1 [NC,L]
+RewriteRule ^page/(.*)$ page.php?page=$1 [NC,L]
+RewriteRule ^find/(.*)$ archive.php?pro=$1 [NC,L]
+
+RewriteRule ^(\w+)$ site/index.php?site=$1 [NC,L]
+RewriteRule ^(\w+)/product$ site/shop.php?site=$1 [NC,L]
+RewriteRule ^(\w+)/track$ site/track.php?site=$1 [NC,L]
+RewriteRule ^(\w+)/contact$ site/contact.php?site=$1 [NC,L]
+
+RewriteRule ^(\w+)/product/(.*)$ site/single-product.php?site=$1&pro=$2 [NC,L]
+RewriteRule ^(\w+)/category/(.*)$ site/archive.php?site=$1&cat=$2 [NC,L]
+RewriteRule ^(\w+)/search/(.*)$ site/search.php?site=$1&search=$2 [NC,L]
+

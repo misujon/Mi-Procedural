@@ -1,0 +1,5 @@
+/.idea/
+vendor
+test
+img
+demo/index*.php

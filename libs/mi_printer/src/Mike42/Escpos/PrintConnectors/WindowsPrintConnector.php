@@ -98,7 +98,7 @@ class WindowsPrintConnector implements PrintConnector
     const REGEX_PRINTERNAME = "/^[\d\w-]+(\s[\d\w-]+)*$/";
 
     /**
-     * Valid smb:// URI containing hostname & printer with optional user & optional password only.
+     * Valid smb:// URI containing hostname & printer with optional site & optional password only.
      */
     const REGEX_SMB = "/^smb:\/\/([\s\d\w-]+(:[\s\d\w+-]+)?@)?([\d\w-]+\.)*[\d\w-]+\/([\d\w-]+\/)?[\d\w-]+(\s[\d\w-]+)*$/";
 
@@ -137,8 +137,8 @@ class WindowsPrintConnector implements PrintConnector
                 $this -> printerName = $path;
             }
             /* Username and password if set */
-            if (isset($part['user'])) {
-                $this -> userName = $part['user'];
+            if (isset($part['site'])) {
+                $this -> userName = $part['site'];
                 if (isset($part['pass'])) {
                     $this -> userPassword = $part['pass'];
                 }
@@ -256,7 +256,7 @@ class WindowsPrintConnector implements PrintConnector
             $device = "\\\\" . $this -> hostname . "\\" . $this -> printerName;
             if ($this -> userName !== null) {
                 /* Log in */
-                $user = "/user:" . ($this -> workgroup != null ? ($this -> workgroup . "\\") : "") . $this -> userName;
+                $user = "/site:" . ($this -> workgroup != null ? ($this -> workgroup . "\\") : "") . $this -> userName;
                 if ($this -> userPassword == null) {
                     $command = sprintf(
                         "net use %s %s",

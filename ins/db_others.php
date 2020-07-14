@@ -6,27 +6,58 @@
 
 /*======================================= MI DB OTHERS FUNCTIONS ==================================================*/
 
-function mi_db_tbl_sum($tbl_name, $column_name, $condition = NULL){
+function mi_db_tbl_sum($tbl_name, $column_name, $condition = NULL, $between = NULL, $between_column = NULL){
 
     if ($condition != NULL){
         $rid  = implode(', ', mi_array_kay_equal_value($condition));
-        $sql = "SELECT SUM(`".$column_name."`) as `total` FROM `".$tbl_name."` WHERE ".$rid;
+        if ($between){
+
+            if ($between_column == NULL){
+                return mi_error_code(77);
+            }else{
+                $exrid  = implode(' AND ', mi_array_kay_equal_value_and($between));
+                $sql = "SELECT SUM(`".$column_name."`) as `total` FROM `".$tbl_name."` WHERE ".$rid." AND `".$between_column."` BETWEEN ".$exrid;
+            }
+
+        }else{
+            $sql = "SELECT SUM(`".$column_name."`) as `total` FROM `".$tbl_name."` WHERE ".$rid;
+        }
+
     }else{
-        $sql = "SELECT SUM(`".$column_name."`) as `total` FROM `".$tbl_name."`";
+        if ($between){
+
+            $exrid  = implode(' AND ', mi_array_kay_equal_value($between));
+            $sql = "SELECT SUM(`".$column_name."`) as `total` FROM `".$tbl_name."` WHERE ".$exrid;
+            if ($between_column == NULL){
+                return mi_error_code(78);
+            }else{
+                $exrid  = implode(' AND ', mi_array_kay_equal_value_and($between));
+                $sql = "SELECT SUM(`".$column_name."`) as `total` FROM `".$tbl_name."` WHERE `".$between_column."` BETWEEN ".$exrid;
+            }
+
+        }else{
+            $sql = "SELECT SUM(`".$column_name."`) as `total` FROM `".$tbl_name."`";
+        }
     }
+
+
     $res = mysqli_query(mi_db(), $sql);
     if (!$res){
         return mi_error_code(7);
     }else{
         $fet = mysqli_fetch_assoc($res);
-        return $fet;
+        return array_sum($fet);
     }
     mysqli_close(mi_db());
 }
 
-function mi_db_tbl_row_count($tbl_name, $condition = NULL){
+function mi_db_tbl_row_count($tbl_name, $condition = NULL, $hasNot = NULL){
     if ($condition){
-        $rid  = implode(', ', mi_array_kay_equal_value($condition));
+        if ($hasNot == true){
+            $rid  = implode(' AND ', mi_array_kay_not_equal_value($condition));
+        }else{
+            $rid  = implode(' AND ', mi_array_kay_equal_value($condition));
+        }
         $sql = "SELECT * FROM `".$tbl_name."` WHERE ".$rid;
     }else{
         $sql = "SELECT * FROM `".$tbl_name."`";
@@ -34,6 +65,36 @@ function mi_db_tbl_row_count($tbl_name, $condition = NULL){
     $res = mysqli_query(mi_db(), $sql);
     if (!$res){
         return mi_error_code(8);
+    }else{
+        return mysqli_num_rows($res);
+    }
+    mysqli_close(mi_db());
+}
+
+function mi_db_tbl_row_count_between($tbl_name, $condition = array(), $column, $extra_cond = NULL, $ex_not = NULL){
+    if ($condition){
+        $rid  = implode(' AND ', mi_array_kay_equal_value_and($condition));
+
+        if ($extra_cond){
+            if ($ex_not == true){
+                $exrid = implode(' AND ', mi_array_kay_not_equal_value($extra_cond));
+                $sql = "SELECT * FROM `".$tbl_name."` WHERE `".$column."` BETWEEN ".$rid." AND ".$exrid;
+            }else{
+                $exrid = implode(' AND ', mi_array_kay_equal_value($extra_cond));
+                $sql = "SELECT * FROM `".$tbl_name."` WHERE `".$column."` BETWEEN ".$rid." AND ".$exrid;
+            }
+        }else{
+            $sql = "SELECT * FROM `".$tbl_name."` WHERE `".$column."` BETWEEN ".$rid;
+        }
+
+    }else{
+        $sql = "SELECT * FROM `".$tbl_name."`";
+    }
+
+
+    $res = mysqli_query(mi_db(), $sql);
+    if (!$res){
+        return mi_error_code(88);
     }else{
         return mysqli_num_rows($res);
     }
@@ -124,7 +185,7 @@ function mi_db_tbl_like($tbl_name, $condition, $column, $attribute_1, $attribute
 
 function mi_db_tbl_val_between($tbl_name, $column, $start, $end, $extra = NULL){
     if ($extra != NULL){
-        $rid  = implode(', ', mi_array_kay_equal_value($extra));
+        $rid  = implode(' AND ', mi_array_kay_equal_value($extra));
         $sql = "SELECT * FROM `".$tbl_name."` WHERE `".$column."` BETWEEN '".$start."' AND '".$end."' AND ".$rid;
     }else{
         $sql = "SELECT * FROM `".$tbl_name."` WHERE `".$column."` BETWEEN '".$start."' AND '".$end."'";
@@ -139,6 +200,21 @@ function mi_db_tbl_val_between($tbl_name, $column, $start, $end, $extra = NULL){
             $arr[] = $fet;
         }
         return $arr;
+    }
+    mysqli_close(mi_db());
+}
+
+
+function mi_db_custom_query($query){
+    $res = mysqli_query(mi_db(), $query);
+    if ($res){
+        $arr = array();
+        while ($fet = mysqli_fetch_assoc($res)){
+            $arr[] = $fet;
+        }
+        return $arr;
+    }else{
+        return false;
     }
     mysqli_close(mi_db());
 }

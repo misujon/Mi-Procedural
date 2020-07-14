@@ -50,18 +50,33 @@ function mi_db_read_all($tbl_name, $order_by = NULL, $order_type = NULL, $limit 
     mysqli_close(mi_db());
 }
 
-function mi_db_read_by_id($tbl_name, $row_id = array()){
+function mi_db_read_by_id($tbl_name, $row_id = array(), $isNot = NULL, $order_by = NULL, $order_type = NULL, $limit = NULL){
 
-    $rid  = implode(' AND ', mi_array_kay_equal_value($row_id));
+    if ($isNot == true){
+        $rid  = implode(' AND ', mi_array_kay_not_equal_value($row_id));
+    }else{
+        $rid  = implode(' AND ', mi_array_kay_equal_value($row_id));
+    }
 
-    $sql = "SELECT * FROM `".$tbl_name."` WHERE ".$rid;
+    if ($order_by != NULL && $limit != NULL){
+        $sql = "SELECT * FROM `".$tbl_name."` WHERE ".$rid."  ORDER BY `".$order_by."` ".$order_type." LIMIT ".$limit;
+    }elseif ($order_by != NULL){
+        if ($order_type == NULL){
+            $order_type = 'ASC';
+        }
+        $sql = "SELECT * FROM `".$tbl_name."` WHERE ".$rid." ORDER BY `".$order_by."` ".$order_type;
+
+    }else{
+        $sql = "SELECT * FROM `".$tbl_name."` WHERE ".$rid;
+    }
+
     $res = mysqli_query(mi_db(), $sql);
 
     if (!$res){
         return mi_error_code(4);
     }else{
         $arr = array();
-        while ($fet = mysqli_fetch_array($res)){
+        while ($fet = mysqli_fetch_assoc($res)){
             $arr[] = $fet;
         }
         return $arr;
@@ -72,10 +87,13 @@ function mi_db_read_by_id($tbl_name, $row_id = array()){
 function mi_db_update($tbl_name, $credential = array(), $row_id = array()){
 
     $cred = implode(', ', mi_array_kay_equal_value($credential));
-    $rid  = implode(', ', mi_array_kay_equal_value($row_id));
+    if (count($row_id)>1){
+        $rid  = implode(' AND ', mi_array_kay_equal_value($row_id));
+    }else{
+        $rid  = implode(', ', mi_array_kay_equal_value($row_id));
+    }
     $sql = "UPDATE `".$tbl_name."` SET ".$cred." WHERE ".$rid;
     $res = mysqli_query(mi_db(), $sql);
-
     if (!$res){
         return mi_error_code(5);
     }else{
@@ -90,6 +108,20 @@ function mi_db_delete($tbl_name, $column, $row_id = array()){
         $sql = "DELETE FROM `".$tbl_name."` WHERE `".$column."` = '$row'";
         $res = mysqli_query(mi_db(), $sql);
     }
+
+    if (!$res){
+        return mi_error_code(6);
+    }else{
+        return TRUE;
+    }
+    mysqli_close(mi_db());
+}
+
+function mi_db_delete_multiple($tbl_name, $row_id = array()){
+
+    $rid  = implode(' AND ', mi_array_kay_equal_value($row_id));
+    $sql = "DELETE FROM `".$tbl_name."` WHERE ".$rid;
+    $res = mysqli_query(mi_db(), $sql);
 
     if (!$res){
         return mi_error_code(6);

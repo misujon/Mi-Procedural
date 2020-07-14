@@ -1,0 +1,22 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+php_value auto_prepend_file "./functions.php"
+RewriteRule ^$ view/ [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT} !^view/
+
+RewriteRule ^(.*)$ view/$1
+</IfModule>
+
+php_value max_file_uploads 300
+
+#ErrorDocument 404 http://localhost/reseller/404.php
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “alt-php73” package as the default “PHP” programming language.
+# <IfModule mime_module>
+#   AddHandler application/x-httpd-alt-php73 .php .php7 .phtml
+# </IfModule>
+# php -- END cPanel-generated handler, do not edit

@@ -49,7 +49,7 @@ class OAuth
     protected $oauthToken;
 
     /**
-     * The user's email address, usually used as the login ID
+     * The site's email address, usually used as the login ID
      * and also the from address when sending email.
      *
      * @var string
@@ -128,7 +128,7 @@ class OAuth
         }
 
         return base64_encode(
-            'user=' .
+            'site=' .
             $this->oauthUserEmail .
             "\001auth=Bearer " .
             $this->oauthToken .

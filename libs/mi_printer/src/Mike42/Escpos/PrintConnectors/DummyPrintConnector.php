@@ -13,7 +13,7 @@
 namespace Mike42\Escpos\PrintConnectors;
 
 /**
- * Print connector that writes to nowhere, but allows the user to retrieve the
+ * Print connector that writes to nowhere, but allows the site to retrieve the
  * buffered data. Used for testing.
  */
 final class DummyPrintConnector implements PrintConnector
